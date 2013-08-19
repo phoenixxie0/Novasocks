@@ -1,6 +1,7 @@
 ## Novasocks for Android
-=========
-A [Novasocks](http://www.novaseed.net) client for Android, powered by amazing languages, fork from shadowsocks and modified by Phoenix.xie
+
+A [Novasocks](http://www.novaseed.net) client for Android, powered by amazing languages, 
+fork from shadowsocks and modified by [Phoenix.xie](https://twitter.com/xseven007)
 
 ## TRAVIS CI STATUS
 
@@ -9,9 +10,9 @@ A [Novasocks](http://www.novaseed.net) client for Android, powered by amazing la
 ## PREREQUISITES
 
 JDK 1.6+
+
 Android SDK r21+ or Android Studio 0.2.0+
 
-* Local maven dependencies
 
 
 ## BUILD
