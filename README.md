@@ -1,6 +1,7 @@
 ## Novasocks for Android
 
 A [Novasocks](http://www.novaseed.net) client for Android, powered by amazing languages, 
+
 fork from shadowsocks and modified by [Phoenix.xie](https://twitter.com/xseven007)
 
 ## TRAVIS CI STATUS
