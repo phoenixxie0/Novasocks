@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.novasocks</groupId>
     <artifactId>novasocks</artifactId>
-    <version>1.7.8</version>
+    <version>1.8.2</version>
     <packaging>apk</packaging>
     <name>Novasocks</name>
 
@@ -14,7 +14,7 @@
             <id>madeye-maven-repository</id>
             <url>http://madeye-maven-repository.googlecode.com/git</url>
             <releases>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </releases>
             <snapshots>
                 <enabled>false</enabled>

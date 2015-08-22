@@ -82,42 +82,7 @@ public class Utils {
 
     private static void checkIptables() {
 
-        if (!isRoot()) {
-            iptables = DEFAULT_IPTABLES;
-            return;
-        }
-
-        // Check iptables binary
-        iptables = DEFAULT_IPTABLES;
-
-        String lines = null;
-
-        boolean compatible = false;
-        boolean version = false;
-
-        StringBuilder sb = new StringBuilder();
-        String command = iptables + " --version\n" + iptables
-                + " -L -t nat -n\n" + "exit\n";
-
-        int exitcode = runScript(command, sb, 10 * 1000, true);
-
-        if (exitcode == TIME_OUT)
-            return;
-
-        lines = sb.toString();
-
-        if (lines.contains("OUTPUT")) {
-            compatible = true;
-        }
-        if (lines.contains("v1.4.")) {
-            version = true;
-        }
-
-        if (!compatible || !version) {
             iptables = ALTERNATIVE_IPTABLES;
-            if (!new File(iptables).exists())
-                iptables = "iptables";
-        }
 
     }
 

@@ -33,21 +33,21 @@ import java.util.HashSet;
 public class NovasocksService extends Service {
 
     public static final String BASE = "/data/data/com.github.novasocks/";
-    final static String REDSOCKS_CONF = "base {" +
-            " log_debug = off;" +
-            " log_info = off;" +
-            " log = stderr;" +
-            " daemon = on;" +
-            " redirector = iptables;" +
-            "}" +
-            "redsocks {" +
-            " local_ip = 0.0.0.0;" +
-            " local_port = 8123;" +
-            " ip = 127.0.0.1;" +
-            " port = %d;" +
-            " type = socks5;" +
-            "}";
-    final static String SHADOWSOCKS_CONF =
+    final static String REDSOCKS_CONF = "base {\n" +
+            " log_debug = off;\n" +
+            " log_info = off;\n" +
+            " log = stderr;\n" +
+            " daemon = on;\n" +
+            " redirector = iptables;\n" +
+            "}\n" +
+            "redsocks {\n" +
+            " local_ip = 127.0.0.1;\n" +
+            " local_port = 8123;\n" +
+            " ip = 127.0.0.1;\n" +
+            " port = %d;\n" +
+            " type = socks5;\n" +
+            "}\n";
+    final static String NOVASOCKS_CONF =
             "{\"server\": [%s], \"server_port\": %d, \"local_port\": %d, \"password\": %s, \"timeout\": %d}";
     final static String CMD_IPTABLES_RETURN = " -t nat -A OUTPUT -p tcp -d 0.0.0.0 -j RETURN\n";
     final static String CMD_IPTABLES_REDIRECT_ADD_SOCKS = " -t nat -A OUTPUT -p tcp "
@@ -170,8 +170,8 @@ public class NovasocksService extends Service {
             @Override
             public void run() {
                 final String cmd = String.format(BASE +
-                        "novasocks -s \"%s\" -p \"%d\" -l \"%d\" -k \"%s\" -m \"%s\" -f "
-                        + BASE + "novasocks.pid",
+                        "novasocks -s \"%s\" -p \"%d\" -l \"%d\" -k \"%s\" -m \"%s\" -u -f "
+                        + BASE + "novasocks.pid --acl" +BASE + "chn.acl",
                         appHost, remotePort, localPort, sitekey, encMethod);
                 System.exec(cmd);
             }
@@ -179,7 +179,7 @@ public class NovasocksService extends Service {
     }
 
     private void startDnsDaemon() {
-        final String cmd = BASE + "pdnsd -c " + BASE + "pdnsd.conf";
+        final String cmd = BASE + "smartdns -c " + BASE + "smartdns.conf";
         Utils.runCommand(cmd);
     }
 
@@ -204,22 +204,22 @@ public class NovasocksService extends Service {
 
         appHost = settings.getString("proxy", "127.0.0.1");
         sitekey = settings.getString("sitekey", "default");
-        encMethod = settings.getString("encMethod", "table");
+        encMethod = settings.getString("encMethod", "rc4-md5");
         try {
-            remotePort = Integer.valueOf(settings.getString("remotePort", "1984"));
+            remotePort = Integer.valueOf(settings.getString("remotePort", "8086"));
         } catch (NumberFormatException ex) {
             remotePort = 1984;
         }
         try {
-            localPort = Integer.valueOf(settings.getString("port", "1984"));
+            localPort = Integer.valueOf(settings.getString("port", "10088"));
         } catch (NumberFormatException ex) {
             localPort = 1984;
         }
 
-        isGlobalProxy = settings.getBoolean("isGlobalProxy", false);
+        isGlobalProxy = settings.getBoolean("isGlobalProxy", true);
         isGFWList = settings.getBoolean("isGFWList", false);
         isBypassApps = settings.getBoolean("isBypassApps", false);
-        isDNSProxy = settings.getBoolean("isDNSProxy", false);
+        isDNSProxy = settings.getBoolean("isDNSProxy", true);
 
         new Thread(new Runnable() {
             @Override
@@ -272,7 +272,7 @@ public class NovasocksService extends Service {
 
     private void startRedsocksDaemon() {
         String conf = String.format(REDSOCKS_CONF, localPort);
-        String cmd = String.format("%sredsocks -p %sredsocks.pid -c %sredsocks.conf",
+        String cmd = String.format("%sredsocks -c %sredsocks.conf -p %sredsocks.pid",
                 BASE, BASE, BASE);
         Utils.runRootCommand("echo \"" + conf + "\" > " + BASE + "redsocks.conf\n"
                 + cmd);
@@ -440,8 +440,8 @@ public class NovasocksService extends Service {
         Utils.runRootCommand(Utils.getIptables() + " -t nat -F OUTPUT");
         StringBuilder sb = new StringBuilder();
         sb.append("kill -9 `cat /data/data/com.github.novasocks/redsocks.pid`").append("\n");
-        if (!waitForProcess("pdnsd")) {
-            sb.append("kill -9 `cat /data/data/com.github.novasocks/pdnsd.pid`").append("\n");
+        if (!waitForProcess("smartdns")) {
+            sb.append("kill -9 `cat /data/data/com.github.novasocks/smartdns.pid`").append("\n");
         }
         if (!waitForProcess("novasocks")) {
             sb.append("kill -9 `cat /data/data/com.github.novasocks/novasocks.pid`").append("\n");

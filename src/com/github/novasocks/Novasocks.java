@@ -9,7 +9,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,7 +23,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.analytics.tracking.android.EasyTracker;
@@ -424,10 +422,10 @@ public class Novasocks extends PreferenceActivity implements
     public void reset() {
         StringBuilder sb = new StringBuilder();
         sb.append(Utils.getIptables()).append(" -t nat -F OUTPUT").append("\n");
-        sb.append("kill -9 `cat /data/data/com.github.novasocks/pdnsd.pid`").append("\n");
+        sb.append("kill -9 `cat /data/data/com.github.novasocks/smartdns.pid`").append("\n");
         sb.append("kill -9 `cat /data/data/com.github.novasocks/redsocks.pid`").append("\n");
         sb.append("kill -9 `cat /data/data/com.github.novasocks/novasocks.pid`").append("\n");
-        sb.append("killall -9 pdnsd").append("\n");
+        sb.append("killall -9 smartdns").append("\n");
         sb.append("killall -9 redsocks").append("\n");
         sb.append("killall -9 novasocks").append("\n");
         Utils.runRootCommand(sb.toString());
@@ -435,10 +433,10 @@ public class Novasocks extends PreferenceActivity implements
         copyAssets("");
         copyAssets(Utils.getABI());
 
-        Utils.runCommand("chmod 755 /data/data/com.github.novasocks/iptables\n"
-                + "chmod 755 /data/data/com.github.novasocks/redsocks\n"
-                + "chmod 755 /data/data/com.github.novasocks/pdnsd\n"
+        Utils.runCommand("chmod 755 /data/data/com.github.novasocks/redsocks\n"
+                + "chmod 755 /data/data/com.github.novasocks/smartdns\n"
                 + "chmod 755 /data/data/com.github.novasocks/novasocks\n"
+                + "chmod 755 /data/data/com.github.novasocks/chn.acl\n"
         );
     }
 
